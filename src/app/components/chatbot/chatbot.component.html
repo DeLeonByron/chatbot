@@ -1,20 +1,37 @@
-<!-- Ícono flotante del chatbot usando el logo -->
+<!-- Ícono flotante del chatbot -->
 <div class="chatbot-icon" (click)="toggleChat()" aria-label="Abrir Chatbot">
   <img src="assets/images/logo-pollo-pitero.png" alt="Logo Pollo Pitero Bot" class="chatbot-logo" />
 </div>
 
+<!-- Ventana del chatbot -->
+<div class="chat-window shadow-lg" *ngIf="isOpen">
+  <div class="chat-header" (click)="toggleChat()">Pollo Pitero Bot</div>
 
-<div class="chat-window shadow" *ngIf="isOpen">
-  <div class="chat-header bg-dark text-white p-2">Pollo Pitero Bot</div>
-  <div class="chat-body p-3" #chatBody>
+  <div class="chat-body" #chatBody>
     <div *ngFor="let msg of messages">
-      <div class="mb-2" [ngClass]="{'text-end': msg.from === 'user'}">
-        <div class="fs-6 text badge bg-{{ msg.from === 'user' ? 'primary text-white' : 'light text-dark' }}">{{ msg.text }}</div>
+      <div class="mb-2 d-flex" [ngClass]="{'justify-content-end': msg.from === 'user', 'justify-content-start': msg.from === 'bot'}">
+        <div
+          class="message-bubble"
+          [ngClass]="{
+            'bg-primary text-white align-self-end': msg.from === 'user',
+            'bg-light text-dark align-self-start': msg.from === 'bot'
+          }"
+        >
+          {{ msg.text }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicador de que el bot está escribiendo -->
+    <div class="mb-2 d-flex justify-content-start" *ngIf="isTyping">
+      <div class="message-bubble bg-light text-dark typing-indicator">
+        <span></span><span></span><span></span>
       </div>
     </div>
   </div>
+
   <div class="chat-footer input-group">
-    <input [(ngModel)]="userInput" (keydown.enter)="sendMessage()" class="form-control" placeholder="Escribe algo..." aria-label="Mensaje">
+    <input [(ngModel)]="userInput" (keydown.enter)="sendMessage()" class="form-control" placeholder="Escribe algo..." />
     <button (click)="sendMessage()" class="btn btn-primary">Enviar</button>
   </div>
 </div>

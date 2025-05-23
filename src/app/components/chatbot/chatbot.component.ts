@@ -14,8 +14,10 @@ import { FormsModule } from '@angular/forms';
 export class ChatbotComponent {
 
   isOpen = false;
-  messages: { from: 'user' | 'bot'; text: string }[] = [];
   userInput = '';
+  isTyping = false;
+
+  messages: { text: string; from: 'user' | 'bot' }[] = [];
 
   constructor(private chatService: ChatResponseService) {}
 
@@ -24,12 +26,24 @@ export class ChatbotComponent {
   }
 
   sendMessage() {
-    if (!this.userInput.trim()) return;
-    const userText = this.userInput.trim();
-    this.messages.push({ from: 'user', text: userText });
-    const botResponse = this.chatService.getResponse(userText);
-    this.messages.push({ from: 'bot', text: botResponse });
+    const input = this.userInput.trim();
+    if (!input) return;
+
+    this.messages.push({ text: input, from: 'user' });
     this.userInput = '';
+    this.isTyping = true;
+
+    setTimeout(() => {
+      const response = this.chatService.getResponse(input);
+      this.isTyping = false;
+      this.messages.push({ text: response, from: 'bot' });
+      setTimeout(() => this.scrollToBottom(), 50);
+    }, 800); // simulamos 1 segundo de "escribiendo..."
+  }
+
+  scrollToBottom() {
+    const chatBody = document.querySelector('.chat-body');
+    if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
   }
 
 }

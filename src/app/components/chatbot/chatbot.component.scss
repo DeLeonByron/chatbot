@@ -4,7 +4,7 @@
   right: 2.5rem;
   width: 110px;
   height: 110px;
-  background-color: #ffc107; /* fondo amarillo (bg-warning) */
+  background-color: #ffc107;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -15,25 +15,26 @@
 }
 
 .chatbot-logo {
-  width: 80%;
-  height: 80%;
+  width: 68%;
+  height: 68%;
   object-fit: contain;
   border-radius: 50%;
 }
-
 
 .chat-window {
   position: fixed;
   bottom: 5rem;
   right: 1rem;
   width: 360px;
-  background: rgb(255, 255, 255);
-  border-radius: 10px;
+  background: #ffffff;
+  border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   z-index: 1000;
   max-height: calc(100vh - 6rem);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-size: 1rem; // tamaño de fuente legible
 }
 
 .chat-header {
@@ -41,18 +42,21 @@
   font-weight: bold;
   background-color: #343a40;
   color: white;
+  padding: 0.75rem;
 }
 
 .chat-body {
-  height: 325px;  /* Altura del contenedor de los mensajes */
-  overflow-y: auto; /* Solo permitir scroll vertical */
-  overflow-x: hidden; /* Evitar el scroll horizontal */
-  background: #eebf32e8;
-  padding: 0.5rem;
+  height: 340px;
+  overflow-y: auto;
+  background: #fff9e6;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .chat-footer {
-  padding: 0.5rem;
+  padding: 0.75rem;
   display: flex;
   align-items: center;
 }
@@ -62,12 +66,48 @@
   margin-right: 0.5rem;
 }
 
-.badge {
-  padding: 0.8rem;
-  margin-bottom: 0.5rem;
-  word-wrap: break-word;  /* Permitir que el texto largo haga salto de línea */
-  word-break: break-word; /* Asegura que las palabras largas se corten correctamente */
-  max-width: 100%;  /* El mensaje puede ocupar el 100% del ancho disponible */
-  display: inline-block;  /* Para permitir que el texto fluya en el contenedor */
-  white-space: normal;  /* Permite que el texto se rompa en varias líneas */
+.message-bubble {
+  padding: 0.75rem 1rem;
+  border-radius: 16px;
+  max-width: 85%;
+  font-size: 0.95rem;
+  text-align: justify;
+  line-height: 1.4;
+  font-weight: 475;
+  word-break: break-word;
+}
+
+/* Animación de typing */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #888;
+  border-radius: 50%;
+  animation: blink 1s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
 }
