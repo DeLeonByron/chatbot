@@ -23,6 +23,21 @@ export class ChatbotComponent {
 
   toggleChat() {
     this.isOpen = !this.isOpen;
+
+    // Solo mostrar mensaje de saludo si se abre el chat y aún no fue mostrado en esta sesión
+    if (this.isOpen && !sessionStorage.getItem('chatSaludoMostrado')) {
+      this.isTyping = true;
+
+      setTimeout(() => {
+        this.messages.push({
+          text: '¡Hola! Bienvenido a Pollo Pitero, el mejor sabor en pollo frito de Guate. ¿En qué puedo ayudarte?',
+          from: 'bot'
+        });
+        this.isTyping = false;
+        sessionStorage.setItem('chatSaludoMostrado', 'true'); // Marcar como mostrado
+        this.scrollToBottom();
+      }, 800); // Simulamos que el bot está escribiendo
+    }
   }
 
   sendMessage() {
