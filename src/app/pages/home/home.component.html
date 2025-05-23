@@ -1,0 +1,90 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-danger sticky-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#">Pollo Pitero</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#menu">Nuestro Menú</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#promociones">Promociones</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#contacto">Contáctanos</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<section class="hero position-relative text-white text-center d-flex justify-content-center align-items-center py-5">
+  <!-- Imagen de fondo -->
+  <img src="assets/images/pollo-bg.jpg" alt="Fondo Pollo Pitero" class="hero-bg-img">
+
+  <!-- Capa oscura para mejor contraste -->
+  <div class="hero-overlay"></div>
+
+  <!-- Contenido del hero -->
+  <div class="hero-content position-relative z-1">
+    <h1 class="display-4 fw-bold">¡Bienvenido a Pollo Pitero!</h1>
+    <p class="lead">El mejor sabor en pollo frito de Guate</p>
+    <a class="btn btn-warning btn-lg mt-3" href="#menu">Ver Menú</a>
+  </div>
+</section>
+
+<!-- Menú -->
+<section id="menu" class="container py-5 text-center">
+  <h2 class="mb-4">Nuestro Menú</h2>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="assets/images/pollo-ajillo.jpg" class="card-img-top" alt="Pollo al ajillo" />
+        <div class="card-body">
+          <h5 class="card-title">Pollo al ajillo a la leña</h5>
+          <p class="card-text">Sabor intenso y jugoso con el toque del ajo.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="assets/images/pollo-adobado.jpg" class="card-img-top" alt="Pollo adobado" />
+        <div class="card-body">
+          <h5 class="card-title">Pollo adobado a la leña</h5>
+          <p class="card-text">Marinado con especias tradicionales, cocido a fuego lento.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="assets/images/pollo-rostizado.jpg" class="card-img-top img-fluid" alt="Pollo rostizado" />
+        <div class="card-body">
+          <h5 class="card-title">Pollo rostizado</h5>
+          <p class="card-text">El clásico favorito de todos, tierno y crujiente.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Promociones -->
+<section id="promociones" class="bg-light py-5 text-center">
+  <div class="container">
+    <h2 class="mb-3">🎉 Promociones</h2>
+    <p class="lead">¡Todos los viernes 2x1 en combos medianos!</p>
+  </div>
+</section>
+
+<!-- Contacto -->
+<section id="contacto" class="container py-5 text-center">
+  <h2>Contáctanos</h2>
+  <p class="mb-0">📍 Av. Las Américas 6-69 Z.14, C.C. Parque Las Américas, Ciudad de Guatemala</p>
+  <p>🕒 Martes a domingo de 11:00 a.m. a 10:00 p.m.</p>
+  <p>📞 Encuéntranos en Uber Eats y PedidosYa</p>
+</section>
+
+<!-- Chatbot -->
+<app-chatbot></app-chatbot>

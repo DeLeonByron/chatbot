@@ -1,0 +1,73 @@
+.chatbot-icon {
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  width: 110px;
+  height: 110px;
+  background-color: #ffc107; /* fondo amarillo (bg-warning) */
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chatbot-logo {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+
+.chat-window {
+  position: fixed;
+  bottom: 5rem;
+  right: 1rem;
+  width: 360px;
+  background: rgb(255, 255, 255);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  max-height: calc(100vh - 6rem);
+}
+
+.chat-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #343a40;
+  color: white;
+}
+
+.chat-body {
+  height: 325px;  /* Altura del contenedor de los mensajes */
+  overflow-y: auto; /* Solo permitir scroll vertical */
+  overflow-x: hidden; /* Evitar el scroll horizontal */
+  background: #eebf32e8;
+  padding: 0.5rem;
+}
+
+.chat-footer {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.chat-footer input {
+  flex-grow: 1;
+  margin-right: 0.5rem;
+}
+
+.badge {
+  padding: 0.8rem;
+  margin-bottom: 0.5rem;
+  word-wrap: break-word;  /* Permitir que el texto largo haga salto de línea */
+  word-break: break-word; /* Asegura que las palabras largas se corten correctamente */
+  max-width: 100%;  /* El mensaje puede ocupar el 100% del ancho disponible */
+  display: inline-block;  /* Para permitir que el texto fluya en el contenedor */
+  white-space: normal;  /* Permite que el texto se rompa en varias líneas */
+}

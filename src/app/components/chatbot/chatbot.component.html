@@ -1,0 +1,20 @@
+<!-- Ícono flotante del chatbot usando el logo -->
+<div class="chatbot-icon" (click)="toggleChat()" aria-label="Abrir Chatbot">
+  <img src="assets/images/logo-pollo-pitero.png" alt="Logo Pollo Pitero Bot" class="chatbot-logo" />
+</div>
+
+
+<div class="chat-window shadow" *ngIf="isOpen">
+  <div class="chat-header bg-dark text-white p-2">Pollo Pitero Bot</div>
+  <div class="chat-body p-3" #chatBody>
+    <div *ngFor="let msg of messages">
+      <div class="mb-2" [ngClass]="{'text-end': msg.from === 'user'}">
+        <div class="fs-6 text badge bg-{{ msg.from === 'user' ? 'primary text-white' : 'light text-dark' }}">{{ msg.text }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-footer input-group">
+    <input [(ngModel)]="userInput" (keydown.enter)="sendMessage()" class="form-control" placeholder="Escribe algo..." aria-label="Mensaje">
+    <button (click)="sendMessage()" class="btn btn-primary">Enviar</button>
+  </div>
+</div>

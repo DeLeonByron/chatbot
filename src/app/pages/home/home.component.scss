@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  scroll-behavior: smooth;
+}
+
+.hero {
+  height: 100vh;
+  overflow: hidden;
+
+  .hero-bg-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    z-index: 0;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 0;
+  }
+
+  .hero-content {
+    z-index: 1;
+  }
+}
+
+.card img {
+  height: 350px;
+  object-fit: cover;
+}
+
+.card-title {
+  color: #b02a37; // Rojo cálido para resaltar
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border: none;
+}
