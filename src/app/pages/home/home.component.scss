@@ -45,3 +45,37 @@
   background-color: #ffc107;
   border: none;
 }
+
+/* Hover efecto para los cards */
+.hover-zoom:hover {
+  transform: scale(1.03);
+  transition: transform 0.3s ease-in-out;
+  -webkit-transform: scale(1.03);
+  -moz-transform: scale(1.03);
+  -ms-transform: scale(1.03);
+  -o-transform: scale(1.03);
+}
+
+.card {
+  transition: transform 0.3s ease-in-out;
+}
+
+.promo-card {
+  animation: float 3s ease-in-out infinite;
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.promo-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CHAT_DATA, ChatEntry } from '../data/chat-response';
 import Fuse, { IFuseOptions } from 'fuse.js';
+import { ChatOrderStep, Order } from '../data/order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,4 +42,37 @@ export class ChatResponseService {
     const defaultEntry = CHAT_DATA.find(entry => entry.id === 'default');
     return defaultEntry?.answer || 'No encontré una respuesta adecuada.';
   }
+
+  getHybridFlowStep(order: Partial<Order>, currentStep: ChatOrderStep): { nextStep: ChatOrderStep, message: string } {
+    switch (currentStep.step) {
+      case 'menu':
+        return {
+          nextStep: { step: 'quantity', data: { combo: order.combo } },
+          message: `Has elegido el combo "${order.combo}". ¿Cuántos deseas ordenar?`
+        };
+      case 'quantity':
+        return {
+          nextStep: { step: 'address', data: { ...order } },
+          message: `¿Cuál es la dirección de entrega?`
+        };
+      case 'address':
+        return {
+          nextStep: { step: 'payment', data: { ...order } },
+          message: `¿Cómo deseas pagar? Opciones: tarjeta, efectivo, qr`
+        };
+      case 'payment':
+        return {
+          nextStep: { step: 'confirmation', data: { ...order } },
+          message: `Perfecto. ¿Deseas confirmar el pedido con estos datos?\nCombo: ${order.combo}\nCantidad: ${order.quantity}\nDirección: ${order.address}\nPago: ${order.paymentMethod}`
+        };
+      default:
+        return {
+          nextStep: { step: 'menu' },
+          message: '¿Qué combo deseas pedir? (ej: Combo Personal, Combo Familiar, Combo Pitero Feliz)'
+        };
+    }
+  }
+
+
+  
 }

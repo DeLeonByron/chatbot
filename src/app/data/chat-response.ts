@@ -8,7 +8,7 @@ export interface ChatEntry {
 export const CHAT_DATA: ChatEntry[] = [
     {
         id: 'saludo',
-        tags: ['hola', 'buenos dias', 'buenas'],
+        tags: ['hola', 'buenos dias', 'buenas', 'holis'],
         answer: '¡Hola! Bienvenido a Pollo Pitero, el mejor sabor en pollo frito de Guate. ¿En qué puedo ayudarte?',
         keywords: 'Saludo inicial del usuario'
     },

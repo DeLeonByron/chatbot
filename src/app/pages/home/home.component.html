@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-danger sticky-top shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark bg-danger sticky-top shadow-lg gy-3">
   <div class="container">
     <a class="navbar-brand fw-bold" href="#">Pollo Pitero</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -40,8 +40,8 @@
 <section id="menu" class="container py-5 text-center">
   <h2 class="mb-4">Nuestro Menú</h2>
   <div class="row g-4">
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
+    <div class="col-md-4 animate__animated animate__fadeInUp">
+      <div class="card h-100 shadow-sm hover-zoom">
         <img src="assets/images/pollo-ajillo.jpg" class="card-img-top" alt="Pollo al ajillo" />
         <div class="card-body">
           <h5 class="card-title">Pollo al ajillo a la leña</h5>
@@ -49,8 +49,8 @@
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
+    <div class="col-md-4 animate__animated animate__fadeInUp">
+      <div class="card h-100 shadow-sm hover-zoom">
         <img src="assets/images/pollo-adobado.jpg" class="card-img-top" alt="Pollo adobado" />
         <div class="card-body">
           <h5 class="card-title">Pollo adobado a la leña</h5>
@@ -58,8 +58,8 @@
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
+    <div class="col-md-4 animate__animated animate__fadeInUp">
+      <div class="card h-100 shadow-sm hover-zoom">
         <img src="assets/images/pollo-rostizado.jpg" class="card-img-top img-fluid" alt="Pollo rostizado" />
         <div class="card-body">
           <h5 class="card-title">Pollo rostizado</h5>
@@ -71,19 +71,64 @@
 </section>
 
 <!-- Promociones -->
-<section id="promociones" class="bg-light py-5 text-center">
+<section id="promociones" class="bg-warning-subtle py-5 text-center animate__animated animate__fadeInUp">
   <div class="container">
-    <h2 class="mb-3">🎉 Promociones</h2>
-    <p class="lead">¡Todos los viernes 2x1 en combos medianos!</p>
+    <h2 class="mb-3">
+      <i class="bi bi-gift-fill text-danger me-2"></i>
+      🎉 Promociones Especiales
+    </h2>
+
+    <!-- Card principal de promoción 2x1 -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-8">
+        <div class="promo-card card bg-danger text-white text-center shadow-lg animate__animated animate__pulse">
+          <div class="card-body">
+            <h5 class="card-title text-white">
+              <i class="bi bi-stars me-2"></i>
+              ¡Promoción Especial!
+            </h5>
+            <p class="card-text fs-5 mb-0">Todos los <strong>viernes</strong> 2x1 en <strong>combos medianos</strong> 🍗🍟</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Otras promociones -->
+    <div class="row justify-content-center">
+      <!-- Cliente Frecuente -->
+      <div class="col-md-4 mb-4">
+        <div class="p-4 bg-white rounded shadow-sm h-100 animate__animated animate__zoomIn animate__delay-1s">
+          <h5><i class="bi bi-bag-heart-fill text-danger me-2"></i> Cliente Frecuente</h5>
+          <p>Acumula puntos y obtén descuentos en cada compra.</p>
+        </div>
+      </div>
+      <!-- Happy Hour -->
+      <div class="col-md-4 mb-4">
+        <div class="p-4 bg-white rounded shadow-sm h-100 animate__animated animate__zoomIn animate__delay-1s">
+          <h5><i class="bi bi-clock-history text-danger me-2"></i> Happy Hour</h5>
+          <p>De 3 a 5 PM: papas gratis en tu orden.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
+
 <!-- Contacto -->
-<section id="contacto" class="container py-5 text-center">
-  <h2>Contáctanos</h2>
-  <p class="mb-0">📍 Av. Las Américas 6-69 Z.14, C.C. Parque Las Américas, Ciudad de Guatemala</p>
-  <p>🕒 Martes a domingo de 11:00 a.m. a 10:00 p.m.</p>
-  <p>📞 Encuéntranos en Uber Eats y PedidosYa</p>
+<section id="contacto" class="container-fluid py-5 text-center animate__animated animate__fadeInUp">
+  <h2><i class="bi bi-envelope-fill text-danger me-2"></i> Contáctanos</h2>
+  <p class="mb-2">
+    <i class="bi bi-geo-alt-fill text-warning me-1"></i>
+    📍 Av. Las Américas 6-69 Z.14, C.C. Parque Las Américas, Ciudad de Guatemala
+  </p>
+  <p class="mb-2">
+    <i class="bi bi-clock-fill text-warning me-1"></i>
+    🕒 Martes a domingo de 11:00 AM a 9:00 PM
+  </p>
+  <p>
+    <i class="bi bi-telephone-fill text-warning me-1"></i>
+    ☎️ +502 1234 5678
+  </p>
 </section>
 
 <!-- Chatbot -->
