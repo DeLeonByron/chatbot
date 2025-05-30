@@ -173,10 +173,36 @@ export class ChatResponseService {
         let combos = [...(currentStep.data.combos || [])];
         combos[combos.length - 1].quantity = quantity;
 
+        // Preguntar si quiere agregar más productos antes de pedir dirección
         return {
-          nextStep: { step: 'address', data: { combos } },
-          message: '¿Cuál es la dirección de entrega?'
+          nextStep: { step: 'addMore', data: { combos } },
+          message: '¡Pedido confirmado! ¿Quieres agregar más productos? (sí/no)'
         };
+      }
+
+      case 'addMore': {
+        const fuse = new Fuse(this.STEP_KEYWORDS.confirmation, { keys: ['phrase'], threshold: 0.4 });
+        const result = fuse.search(input);
+        const addMore = result[0]?.item?.data;
+
+        if (addMore === undefined) {
+          return {
+            nextStep: currentStep,
+            message: 'Por favor responde "sí" o "no". ¿Quieres agregar más productos?'
+          };
+        }
+
+        if (addMore) {
+          return {
+            nextStep: { step: 'menu', data: currentStep.data },
+            message: 'Perfecto. ¿Qué producto deseas agregar?'
+          };
+        } else {
+          return {
+            nextStep: { step: 'address', data: currentStep.data },
+            message: '¿Cuál es la dirección de entrega?'
+          };
+        }
       }
 
       case 'address': {
@@ -219,38 +245,13 @@ export class ChatResponseService {
 
         if (confirm) {
           return {
-            nextStep: { step: 'addMore', data: { ...order } },
-            message: '¡Pedido confirmado! ¿Quieres agregar más productos? (sí/no)'
+            nextStep: { step: 'end' },
+            message: 'Gracias por tu pedido. ¡Será entregado pronto!'
           };
         } else {
           return {
-            nextStep: { step: 'menu', data: { combos: [] } },
-            message: 'Pedido cancelado. Comencemos de nuevo. ¿Qué producto deseas?'
-          };
-        }
-      }
-
-      case 'addMore': {
-        const fuse = new Fuse(this.STEP_KEYWORDS.confirmation, { keys: ['phrase'], threshold: 0.4 });
-        const result = fuse.search(input);
-        const addMore = result[0]?.item?.data;
-
-        if (addMore === undefined) {
-          return {
-            nextStep: currentStep,
-            message: 'Por favor responde "sí" o "no". ¿Quieres agregar más productos?'
-          };
-        }
-
-        if (addMore) {
-          return {
-            nextStep: { step: 'menu', data: order },
-            message: 'Perfecto. ¿Qué producto deseas agregar?'
-          };
-        } else {
-          return {
-            nextStep: { step: 'done' },
-            message: 'Gracias por tu pedido. ¡Buen provecho!'
+            nextStep: { step: 'start' },
+            message: 'Pedido cancelado. ¿Quieres comenzar de nuevo? (sí/no)'
           };
         }
       }
@@ -258,21 +259,14 @@ export class ChatResponseService {
       case 'end': {
         return {
           nextStep: currentStep,
-          message: 'Si necesitas algo más, solo escribe.'
-        };
-      }
-
-      case 'done': {
-        return {
-          nextStep: currentStep,
-          message: 'La conversación ha terminado. Gracias por tu pedido.'
+          message: 'Gracias por usar nuestro servicio. ¡Hasta luego!'
         };
       }
 
       default:
         return {
           nextStep: { step: 'start' },
-          message: '¿Quieres ver el menú? (sí/no)'
+          message: 'Hola, ¿quieres hacer un pedido? (sí/no)'
         };
     }
   }
