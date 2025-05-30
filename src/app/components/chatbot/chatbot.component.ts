@@ -7,9 +7,9 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-chatbot',
   standalone: true,
-  imports: [CommonModule, FormsModule ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './chatbot.component.html',
-  styleUrl: './chatbot.component.scss'
+  styleUrls: ['./chatbot.component.scss']
 })
 export class ChatComponent {
   isOpen = false;
@@ -18,7 +18,7 @@ export class ChatComponent {
   isTyping = false;
 
   order: Partial<Order> = { combos: [] };
-  currentStep: ChatOrderStep = { step: 'menu' };
+  currentStep: ChatOrderStep = { step: 'start' };
 
   @ViewChild('chatBody') chatBody!: ElementRef<HTMLDivElement>;
 
@@ -28,7 +28,7 @@ export class ChatComponent {
     this.isOpen = !this.isOpen;
 
     if (this.isOpen && this.messages.length === 0) {
-      this.addBotMessage('¡Hola! Bienvenido a Pollo Pitero. ¿Qué combo deseas pedir?');
+      this.addBotMessage('¡Hola! ¿Quieres ver el menú? (sí/no)');
     }
   }
 

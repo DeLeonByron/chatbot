@@ -1,9 +1,22 @@
-// chat-response.service.ts
-
 import { Injectable } from '@angular/core';
-import { CHAT_DATA, ChatEntry } from '../data/chat-response';
 import Fuse, { IFuseOptions } from 'fuse.js';
+import { CHAT_DATA, ChatEntry } from '../data/chat-response';
 import { ChatOrderStep, Order } from '../data/order.model';
+
+interface MenuItem {
+  id: number;
+  name: string;
+  isCombo: boolean;
+}
+
+const MENU_ITEMS: MenuItem[] = [
+  { id: 1, name: 'Combo Familiar', isCombo: true },
+  { id: 2, name: 'Combo Personal', isCombo: true },
+  { id: 3, name: 'Combo Pitero Feliz', isCombo: true },
+  { id: 4, name: 'Pizza Margarita', isCombo: false },
+  { id: 5, name: 'Hamburguesa', isCombo: false },
+  { id: 6, name: 'Papas Fritas', isCombo: false }
+];
 
 @Injectable({
   providedIn: 'root'
@@ -31,16 +44,16 @@ export class ChatResponseService {
     );
     if (exactMatch) return exactMatch.answer;
 
-    // Fuzzy
+    // Fuzzy search
     const results = this.fuse.search(normalized);
     if (results.length > 0) return results[0].item.answer;
 
-    // Default
+    // Default fallback
     const defaultEntry = CHAT_DATA.find(entry => entry.id === 'default');
     return defaultEntry?.answer || 'No encontré una respuesta adecuada.';
   }
 
-  // Mapa de frases por paso
+  // Mapa de frases por paso para reconocimiento
   private STEP_KEYWORDS = {
     menu: [
       { phrase: 'combo familiar', data: { id: 1, name: 'Combo Familiar' } },
@@ -54,6 +67,7 @@ export class ChatResponseService {
     ],
     confirmation: [
       { phrase: 'sí', data: true },
+      { phrase: 'si', data: true },  // sin tilde
       { phrase: 'no', data: false }
     ]
   };
@@ -63,50 +77,111 @@ export class ChatResponseService {
     currentStep: ChatOrderStep,
     userInput: string
   ): { nextStep: ChatOrderStep, message: string } {
-
     const input = userInput.trim().toLowerCase();
 
     switch (currentStep.step) {
-      case 'menu': {
-        const fuse = new Fuse(this.STEP_KEYWORDS.menu, { keys: ['phrase'], threshold: 0.4 });
-        const result = fuse.search(input);
-        const combo = result[0]?.item?.data;
 
-        if (combo) {
-          const updatedCombos = [...(order.combos || []), { ...combo, quantity: 1 }];
+      case 'start': {
+        const fuse = new Fuse(this.STEP_KEYWORDS.confirmation, { keys: ['phrase'], threshold: 0.4 });
+        const result = fuse.search(input);
+        const answer = result[0]?.item?.data;
+
+        if (answer === true) {
           return {
-            nextStep: { step: 'quantity', data: { combos: updatedCombos } },
-            message: `Has elegido el combo "${combo.name}". ¿Cuántos deseas ordenar?`
+            nextStep: { step: 'menu', data: { combos: [] } },
+            message: '¡Perfecto! Aquí está nuestro menú: Combo Familiar, Combo Personal, Combo Pitero Feliz. ¿Qué combo deseas pedir?'
+          };
+        } else if (answer === false) {
+          return {
+            nextStep: { step: 'end' },
+            message: 'Está bien, si necesitas algo más aquí estaré. ¡Que tengas un buen día!'
+          };
+        } else {
+          return {
+            nextStep: currentStep,
+            message: '¿Quieres ver el menú? Por favor responde "sí" o "no".'
+          };
+        }
+      }
+
+      case 'menu': {
+        // Buscar por número
+        const num = parseInt(input, 10);
+        let item: MenuItem | null = null;
+        if (!isNaN(num)) {
+          item = MENU_ITEMS.find(m => m.id === num) || null;
+        }
+
+        // Si no se encontró por número, buscar por nombre fuzzy con Fuse
+        if (!item) {
+          const fuse = new Fuse(MENU_ITEMS, { keys: ['name'], threshold: 0.3 });
+          const result = fuse.search(input);
+          if (result.length > 0) item = result[0].item;
+        }
+
+        if (!item) {
+          return {
+            nextStep: currentStep,
+            message: 'No encontré ese producto. Por favor, elige un número o nombre válido del menú.'
           };
         }
 
         return {
-          nextStep: currentStep,
-          message: 'No entendí qué combo deseas. Intenta decir "Combo Familiar", "Combo Personal", etc.'
+          nextStep: { step: 'askCombo', data: { selectedItem: item, combos: order.combos || [] } },
+          message: item.isCombo
+            ? `Has elegido "${item.name}". ¿Quieres que lo preparemos en combo? (sí/no)`
+            : `Has elegido "${item.name}". ¿Cuántos deseas ordenar?`
+        };
+      }
+
+      case 'askCombo': {
+        const fuse = new Fuse(this.STEP_KEYWORDS.confirmation, { keys: ['phrase'], threshold: 0.4 });
+        const result = fuse.search(input);
+        const answer = result[0]?.item?.data;
+
+        if (answer === undefined) {
+          return {
+            nextStep: currentStep,
+            message: 'Por favor responde "sí" o "no". ¿Quieres el producto en combo?'
+          };
+        }
+
+        const item = currentStep.data.selectedItem;
+        let combos = [...(currentStep.data.combos || [])];
+
+        combos.push({
+          ...item,
+          quantity: 0,
+          isCombo: answer === true
+        });
+
+        return {
+          nextStep: { step: 'quantity', data: { combos } },
+          message: '¿Cuántos deseas ordenar?'
         };
       }
 
       case 'quantity': {
         const quantity = parseInt(input, 10);
-        if (!isNaN(quantity) && quantity > 0) {
-          const updatedCombos = [...(order.combos || [])];
-          updatedCombos[updatedCombos.length - 1].quantity = quantity;
-
+        if (!quantity || quantity <= 0) {
           return {
-            nextStep: { step: 'address', data: { ...order, combos: updatedCombos } },
-            message: '¿Cuál es la dirección de entrega?'
+            nextStep: currentStep,
+            message: 'Por favor, indica un número válido para la cantidad.'
           };
         }
 
+        let combos = [...(currentStep.data.combos || [])];
+        combos[combos.length - 1].quantity = quantity;
+
         return {
-          nextStep: currentStep,
-          message: 'Por favor, indica un número válido de combos.'
+          nextStep: { step: 'address', data: { combos } },
+          message: '¿Cuál es la dirección de entrega?'
         };
       }
 
       case 'address': {
         return {
-          nextStep: { step: 'payment', data: { ...order, address: input } },
+          nextStep: { step: 'payment', data: { ...order, address: userInput.trim() } },
           message: '¿Cómo deseas pagar? Opciones: tarjeta, efectivo, qr'
         };
       }
@@ -116,19 +191,17 @@ export class ChatResponseService {
         const result = fuse.search(input);
         const method = result[0]?.item?.data;
 
-        if (method) {
+        if (!method) {
           return {
-            nextStep: {
-              step: 'confirmation',
-              data: { ...order, paymentMethod: method }
-            },
-            message: `Perfecto. ¿Deseas confirmar el pedido?\nDirección: ${order.address}\nPago: ${method}`
+            nextStep: currentStep,
+            message: 'Método de pago no reconocido. Por favor usa: tarjeta, efectivo o qr.'
           };
         }
 
         return {
-          nextStep: currentStep,
-          message: 'Método de pago no reconocido. Prueba con: tarjeta, efectivo o qr.'
+          nextStep: { step: 'confirmation', data: { ...order, paymentMethod: method } },
+          message: `Perfecto. Aquí está el resumen:\nProductos:\n${order.combos
+            ?.map(c => `${c.quantity} x ${c.name} ${c.isCombo ? '(combo)' : ''}`).join('\n')}\nDirección: ${order.address}\nPago: ${method}\n¿Confirmas el pedido? (sí/no)`
         };
       }
 
@@ -137,22 +210,24 @@ export class ChatResponseService {
         const result = fuse.search(input);
         const confirm = result[0]?.item?.data;
 
-        if (confirm === true) {
+        if (confirm === undefined) {
           return {
-            nextStep: { step: 'addMore', data: { ...order } },
-            message: '¡Pedido confirmado! ¿Quieres agregar más combos? (sí/no)'
-          };
-        } else if (confirm === false) {
-          return {
-            nextStep: { step: 'menu', data: { combos: [] } },
-            message: 'Pedido cancelado. Empecemos de nuevo. ¿Qué combo deseas pedir?'
+            nextStep: currentStep,
+            message: 'Por favor responde "sí" o "no". ¿Confirmas el pedido?'
           };
         }
 
-        return {
-          nextStep: currentStep,
-          message: '¿Puedes confirmar con "sí" o "no"?'
-        };
+        if (confirm) {
+          return {
+            nextStep: { step: 'addMore', data: { ...order } },
+            message: '¡Pedido confirmado! ¿Quieres agregar más productos? (sí/no)'
+          };
+        } else {
+          return {
+            nextStep: { step: 'menu', data: { combos: [] } },
+            message: 'Pedido cancelado. Comencemos de nuevo. ¿Qué producto deseas?'
+          };
+        }
       }
 
       case 'addMore': {
@@ -160,78 +235,45 @@ export class ChatResponseService {
         const result = fuse.search(input);
         const addMore = result[0]?.item?.data;
 
-        if (addMore === true) {
+        if (addMore === undefined) {
           return {
-            nextStep: { step: 'menu', data: { ...order } },
-            message: '¿Qué combo deseas pedir ahora?'
+            nextStep: currentStep,
+            message: 'Por favor responde "sí" o "no". ¿Quieres agregar más productos?'
           };
         }
 
+        if (addMore) {
+          return {
+            nextStep: { step: 'menu', data: order },
+            message: 'Perfecto. ¿Qué producto deseas agregar?'
+          };
+        } else {
+          return {
+            nextStep: { step: 'done' },
+            message: 'Gracias por tu pedido. ¡Buen provecho!'
+          };
+        }
+      }
+
+      case 'end': {
         return {
-          nextStep: { step: 'done' },
-          message: 'Gracias por tu pedido. ¡Buen provecho!'
+          nextStep: currentStep,
+          message: 'Si necesitas algo más, solo escribe.'
+        };
+      }
+
+      case 'done': {
+        return {
+          nextStep: currentStep,
+          message: 'La conversación ha terminado. Gracias por tu pedido.'
         };
       }
 
       default:
         return {
-          nextStep: { step: 'menu' },
-          message: '¿Qué combo deseas pedir?'
+          nextStep: { step: 'start' },
+          message: '¿Quieres ver el menú? (sí/no)'
         };
     }
   }
-
-  // Tu función FSM anterior permanece igual si deseas mantenerla también
-  getHybridFlowStep(order: Partial<Order>, currentStep: ChatOrderStep): { nextStep: ChatOrderStep, message: string } {
-    switch (currentStep.step) {
-      case 'menu':
-        const lastCombo = order.combos && order.combos.length > 0 ? order.combos[order.combos.length - 1] : null;
-        return {
-          nextStep: { step: 'quantity', data: { combos: order.combos } },
-          message: lastCombo
-            ? `Has elegido el combo "${lastCombo.name}". ¿Cuántos deseas ordenar?`
-            : `¿Qué combo deseas pedir?`
-        };
-
-      case 'quantity':
-        return {
-          nextStep: { step: 'address', data: { ...order } },
-          message: `¿Cuál es la dirección de entrega?`
-        };
-
-      case 'address':
-        return {
-          nextStep: { step: 'payment', data: { ...order } },
-          message: `¿Cómo deseas pagar? Opciones: tarjeta, efectivo, qr`
-        };
-
-      case 'payment':
-        const combosList = order.combos
-          ? order.combos.map(c => `${c.quantity} x ${c.name}`).join(', ')
-          : '';
-        return {
-          nextStep: { step: 'confirmation', data: { ...order } },
-          message: `Perfecto. ¿Deseas confirmar el pedido con estos datos?\nCombos: ${combosList}\nDirección: ${order.address}\nPago: ${order.paymentMethod}`
-        };
-
-      case 'confirmation':
-        return {
-          nextStep: { step: 'addMore' },
-          message: '¿Quieres agregar más combos a tu pedido? (sí/no)'
-        };
-
-      case 'addMore':
-        return {
-          nextStep: { step: 'menu' },
-          message: '¿Qué combo deseas pedir ahora?'
-        };
-
-      default:
-        return {
-          nextStep: { step: 'menu' },
-          message: '¿Qué combo deseas pedir?'
-        };
-    }
-  }
-
 }

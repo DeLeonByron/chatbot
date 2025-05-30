@@ -1,13 +1,15 @@
 export interface ChatOrderStep {
-  step: 'menu' | 'quantity' | 'address' | 'payment' | 'confirmation' | 'addMore' | 'done';
+  step: 'menu' | 'quantity' | 'address' | 'payment' | 'confirmation' | 'addMore' | 'done' | 'start' | 'end' | 'askCombo';
   data?: any;
 }
 
 export interface Combo {
-  id: string;        // Opcional, puede ser el identificador único del combo
-  name: string;      // Nombre del combo (ej: "Combo Familiar")
-  quantity: number;  // Cantidad específica para ese combo
+  id: string;
+  name: string;
+  quantity: number;
+  isCombo?: boolean;  // <-- agregar esta propiedad opcional
 }
+
 
 
 export interface Order {
