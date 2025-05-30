@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { ChatbotComponent } from '../../components/chatbot/chatbot.component';
+import { ChatComponent } from '../../components/chatbot/chatbot.component';
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ChatbotComponent],
+  imports: [ChatComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
